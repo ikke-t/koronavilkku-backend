@@ -1,0 +1,21 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  labels:
+    app: koronavilkku
+    app.kubernetes.io/component: publish-token
+    app.kubernetes.io/instance: publish-token
+    app.kubernetes.io/name: java
+    app.kubernetes.io/part-of: koronavilkku
+    app.openshift.io/runtime: java
+    app.openshift.io/runtime-version: "11"
+  name: publish-token
+spec:
+  # host: publish-token
+  port:
+    targetPort: 8080-tcp
+  to:
+    kind: Service
+    name: publish-token
+    weight: 100
+  wildcardPolicy: None

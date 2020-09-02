@@ -1,0 +1,47 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  annotations:
+    app.openshift.io/vcs-ref: master
+    app.openshift.io/vcs-uri: https://github.com/THLfi/koronavilkku-backend.git
+  labels:
+    app: koronavilkku
+    app.kubernetes.io/component: exposure-notification
+    app.kubernetes.io/instance: exposure-notification
+    app.kubernetes.io/name: java
+    app.kubernetes.io/part-of: koronavilkku
+    app.openshift.io/runtime: java
+    app.openshift.io/runtime-version: "11"
+  name: exposure-notification
+spec:
+  failedBuildsHistoryLimit: 5
+  output:
+    to:
+      kind: ImageStreamTag
+      name: exposure-notification:latest
+  runPolicy: Serial
+  source:
+    contextDir: /exposure-notification
+    git:
+      uri: https://github.com/THLfi/koronavilkku-backend.git
+    type: Git
+  strategy:
+    sourceStrategy:
+      from:
+        kind: ImageStreamTag
+        name: java:11
+        namespace: openshift
+    type: Source
+  successfulBuildsHistoryLimit: 5
+  triggers:
+  - generic:
+      secretReference:
+        name: exposure-notification-generic-webhook-secret
+    type: Generic
+  - github:
+      secretReference:
+        name: exposure-notification-github-webhook-secret
+    type: GitHub
+  - imageChange:
+    type: ImageChange
+  - type: ConfigChange
